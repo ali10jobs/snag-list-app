@@ -35,6 +35,9 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $locale = app()->getLocale();
+        $direction = in_array($locale, ['ar', 'he', 'fa', 'ur'], true) ? 'rtl' : 'ltr';
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -42,6 +45,30 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'locale' => $locale,
+            'direction' => $direction,
+            'translations' => fn () => $this->translations($locale),
+            'demoMode' => (bool) env('DEMO_MODE', false),
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+            ],
         ];
+    }
+
+    /**
+     * Load the JSON translation bundle for the active locale (resources/lang/{locale}.json or lang/{locale}.json).
+     *
+     * @return array<string, string>
+     */
+    private function translations(string $locale): array
+    {
+        $path = base_path("lang/{$locale}.json");
+
+        if (! is_file($path)) {
+            return [];
+        }
+
+        return json_decode((string) file_get_contents($path), true) ?: [];
     }
 }

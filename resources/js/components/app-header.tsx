@@ -28,6 +28,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { LocaleToggle } from '@/components/locale-toggle';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { useInitials } from '@/hooks/use-initials';
@@ -210,6 +211,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                 ))}
                             </div>
                         </div>
+                        <LocaleToggle />
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
