@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SnagController;
@@ -13,7 +14,7 @@ Route::inertia('/', 'welcome', [
 Route::post('locale', [LocaleController::class, 'update'])->name('locale.update');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::get('projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
