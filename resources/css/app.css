@@ -147,4 +147,16 @@
     html[dir='rtl'] body {
         font-family: var(--font-arabic);
     }
+
+    /*
+     * RTL safety net: flip directional Lucide icons (chevrons / arrows) that
+     * weren't authored with rtl:rotate-180. Limited to icons inside RTL pages
+     * so dir-neutral icons (search, plus, etc.) are untouched.
+     */
+    html[dir='rtl'] .lucide-chevron-right,
+    html[dir='rtl'] .lucide-chevron-left,
+    html[dir='rtl'] .lucide-arrow-right,
+    html[dir='rtl'] .lucide-arrow-left {
+        transform: scaleX(-1);
+    }
 }
