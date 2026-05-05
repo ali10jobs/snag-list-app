@@ -22,6 +22,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('projects/{project}/snags/create', [SnagController::class, 'create'])->name('snags.create');
     Route::post('projects/{project}/snags', [SnagController::class, 'store'])->name('snags.store');
     Route::get('projects/{project}/snags/{snag}', [SnagController::class, 'show'])->name('snags.show');
+    Route::get('projects/{project}/snags/{snag}/edit', [SnagController::class, 'edit'])->name('snags.edit');
+    Route::patch('projects/{project}/snags/{snag}', [SnagController::class, 'update'])->name('snags.update');
     Route::patch('projects/{project}/snags/{snag}/status', [SnagController::class, 'updateStatus'])->name('snags.status');
     Route::post('projects/{project}/snags/{snag}/comments', [SnagController::class, 'addComment'])->name('snags.comments.store');
 });

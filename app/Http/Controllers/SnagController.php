@@ -7,11 +7,13 @@ use App\Enums\SnagStatus;
 use App\Enums\Trade;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\StoreSnagRequest;
+use App\Http\Requests\UpdateSnagRequest;
 use App\Http\Requests\UpdateSnagStatusRequest;
 use App\Models\Project;
 use App\Models\Snag;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -38,6 +40,58 @@ class SnagController extends Controller
             'snag' => $snag,
             'statuses' => SnagStatus::values(),
         ]);
+    }
+
+    public function edit(Project $project, Snag $snag): Response
+    {
+        $this->ensureScope($project, $snag);
+
+        return Inertia::render('snags/edit', [
+            'project' => $project->only(['id', 'name', 'client', 'location']),
+            'snag' => $snag->only([
+                'id',
+                'title',
+                'description',
+                'location',
+                'trade',
+                'severity',
+                'assigned_to',
+                'due_date',
+                'photo_path',
+            ]),
+            'trades' => Trade::values(),
+            'severities' => Severity::values(),
+        ]);
+    }
+
+    public function update(
+        UpdateSnagRequest $request,
+        Project $project,
+        Snag $snag,
+    ): RedirectResponse {
+        $this->ensureScope($project, $snag);
+
+        $data = $request->validated();
+        $removePhoto = (bool) ($data['remove_photo'] ?? false);
+        unset($data['remove_photo']);
+
+        if ($request->hasFile('photo')) {
+            if ($snag->photo_path) {
+                Storage::disk('public')->delete($snag->photo_path);
+            }
+            $data['photo_path'] = $request->file('photo')->store('snags', 'public');
+        } elseif ($removePhoto && $snag->photo_path) {
+            Storage::disk('public')->delete($snag->photo_path);
+            $data['photo_path'] = null;
+        }
+
+        unset($data['photo']);
+
+        $snag->update($data);
+
+        return redirect()
+            ->route('snags.show', ['project' => $project, 'snag' => $snag])
+            ->with('success', __('Snag updated.'));
     }
 
     public function store(StoreSnagRequest $request, Project $project): RedirectResponse

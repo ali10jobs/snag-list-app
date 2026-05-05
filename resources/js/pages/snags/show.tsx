@@ -1,4 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { Pencil } from 'lucide-react';
 import { type FormEvent } from 'react';
 
 import { SeverityBadge } from '@/components/severity-badge';
@@ -75,23 +76,41 @@ export default function SnagShow({ project, snag, statuses }: Props) {
                     </Link>
                 </div>
 
-                <header className="space-y-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <StatusBadge status={snag.status} />
-                        <SeverityBadge severity={snag.severity} />
-                        <span className="text-xs text-muted-foreground">
-                            {t(TRADE_LABELS[snag.trade] ?? snag.trade)}
-                        </span>
+                <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="space-y-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <StatusBadge status={snag.status} />
+                            <SeverityBadge severity={snag.severity} />
+                            <span className="text-xs text-muted-foreground">
+                                {t(TRADE_LABELS[snag.trade] ?? snag.trade)}
+                            </span>
+                        </div>
+                        <h1
+                            className="text-2xl font-semibold tracking-tight md:text-3xl"
+                            dir="auto"
+                        >
+                            {snag.title}
+                        </h1>
+                        <p
+                            className="text-sm text-muted-foreground"
+                            dir="auto"
+                        >
+                            {snag.location}
+                        </p>
                     </div>
-                    <h1
-                        className="text-2xl font-semibold tracking-tight md:text-3xl"
-                        dir="auto"
-                    >
-                        {snag.title}
-                    </h1>
-                    <p className="text-sm text-muted-foreground" dir="auto">
-                        {snag.location}
-                    </p>
+                    <Button asChild variant="outline">
+                        <Link
+                            href={
+                                snagRoutes.edit({
+                                    project: project.id,
+                                    snag: snag.id,
+                                }).url
+                            }
+                        >
+                            <Pencil className="size-4" />
+                            {t('Edit')}
+                        </Link>
+                    </Button>
                 </header>
 
                 <Card>

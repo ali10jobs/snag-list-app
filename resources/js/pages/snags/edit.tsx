@@ -1,46 +1,56 @@
 import { Head, Link } from '@inertiajs/react';
 
-import { SnagForm } from '@/components/snag-form';
+import { SnagForm, type SnagFormInitial } from '@/components/snag-form';
 import { useTranslations } from '@/hooks/use-translations';
-import * as projectRoutes from '@/routes/projects';
 import * as snagRoutes from '@/routes/snags';
 import type { Severity, Trade } from '@/types/domain';
 
 interface Props {
     project: { id: string; name: string; client: string; location: string };
+    snag: SnagFormInitial & { id: string };
     trades: Trade[];
     severities: Severity[];
 }
 
-export default function SnagsCreate({ project, trades, severities }: Props) {
+export default function SnagsEdit({ project, snag, trades, severities }: Props) {
     const t = useTranslations();
+    const cancelHref = snagRoutes.show({
+        project: project.id,
+        snag: snag.id,
+    }).url;
 
     return (
         <>
-            <Head title={t('New snag')} />
+            <Head title={t('Edit')} />
 
             <div className="mx-auto w-full max-w-2xl space-y-6 p-4 md:p-6">
                 <div>
                     <Link
-                        href={projectRoutes.show(project.id).url}
+                        href={cancelHref}
                         className="text-sm text-muted-foreground underline-offset-4 hover:underline"
                     >
-                        ← {project.name}
+                        ← {snag.title}
                     </Link>
                 </div>
 
                 <header>
                     <h1 className="text-2xl font-semibold tracking-tight">
-                        {t('New snag')}
+                        {t('Edit snag')}
                     </h1>
                 </header>
 
                 <SnagForm
-                    method="post"
-                    action={snagRoutes.store(project.id).url}
+                    method="patch"
+                    action={
+                        snagRoutes.update({
+                            project: project.id,
+                            snag: snag.id,
+                        }).url
+                    }
+                    initial={snag}
                     trades={trades}
                     severities={severities}
-                    cancelHref={projectRoutes.show(project.id).url}
+                    cancelHref={cancelHref}
                     submitLabel={t('Save')}
                 />
             </div>
