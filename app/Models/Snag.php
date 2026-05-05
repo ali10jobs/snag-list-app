@@ -5,13 +5,16 @@ namespace App\Models;
 use App\Enums\Severity;
 use App\Enums\SnagStatus;
 use App\Enums\Trade;
+use App\Observers\SnagObserver;
 use Database\Factories\SnagFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[ObservedBy(SnagObserver::class)]
 class Snag extends Model
 {
     /** @use HasFactory<SnagFactory> */

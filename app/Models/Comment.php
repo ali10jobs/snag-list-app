@@ -19,7 +19,15 @@ class Comment extends Model
         'snag_id',
         'author',
         'body',
+        'is_system',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_system' => 'boolean',
+        ];
+    }
 
     /**
      * @return BelongsTo<Snag, $this>
