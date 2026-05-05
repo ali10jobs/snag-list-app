@@ -7,6 +7,7 @@ use App\Enums\SnagStatus;
 use App\Enums\Trade;
 use App\Http\Requests\StoreSnagRequest;
 use App\Models\Project;
+use App\Models\Snag;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -20,6 +21,18 @@ class SnagController extends Controller
             'trades' => Trade::values(),
             'severities' => Severity::values(),
             'statuses' => SnagStatus::values(),
+        ]);
+    }
+
+    public function show(Project $project, Snag $snag): Response
+    {
+        abort_unless($snag->project_id === $project->id, 404);
+
+        $snag->load(['comments' => fn ($q) => $q->orderBy('created_at')]);
+
+        return Inertia::render('snags/show', [
+            'project' => $project->only(['id', 'name', 'client', 'location']),
+            'snag' => $snag,
         ]);
     }
 

@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('projects/{project}/snags/create', [SnagController::class, 'create'])->name('snags.create');
     Route::post('projects/{project}/snags', [SnagController::class, 'store'])->name('snags.store');
+    Route::get('projects/{project}/snags/{snag}', [SnagController::class, 'show'])->name('snags.show');
 });
 
 require __DIR__.'/settings.php';
