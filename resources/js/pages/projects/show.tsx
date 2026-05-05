@@ -1,7 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
+import { Plus } from 'lucide-react';
 
 import { SeverityBadge } from '@/components/severity-badge';
 import { StatusBadge } from '@/components/status-badge';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -10,6 +12,7 @@ import {
 } from '@/components/ui/card';
 import { useTranslations } from '@/hooks/use-translations';
 import * as projectRoutes from '@/routes/projects';
+import * as snagRoutes from '@/routes/snags';
 import type { Project, Snag } from '@/types/domain';
 
 interface Props {
@@ -34,16 +37,27 @@ export default function ProjectShow({ project }: Props) {
                     </Link>
                 </div>
 
-                <header className="space-y-2">
-                    <h1
-                        className="text-2xl font-semibold tracking-tight md:text-3xl"
-                        dir="auto"
-                    >
-                        {project.name}
-                    </h1>
-                    <p className="text-sm text-muted-foreground" dir="auto">
-                        {project.client} · {project.location}
-                    </p>
+                <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="space-y-2">
+                        <h1
+                            className="text-2xl font-semibold tracking-tight md:text-3xl"
+                            dir="auto"
+                        >
+                            {project.name}
+                        </h1>
+                        <p
+                            className="text-sm text-muted-foreground"
+                            dir="auto"
+                        >
+                            {project.client} · {project.location}
+                        </p>
+                    </div>
+                    <Button asChild>
+                        <Link href={snagRoutes.create(project.id).url}>
+                            <Plus className="size-4" />
+                            {t('New snag')}
+                        </Link>
+                    </Button>
                 </header>
 
                 <div className="grid gap-3 sm:grid-cols-3">
